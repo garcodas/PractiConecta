@@ -1,0 +1,86 @@
+syntax = "proto3";
+package practiconecta.identity;
+
+import "common.proto";
+
+message User {
+  string id = 1;
+  string email = 2;
+  string role = 3;
+  string display_name = 4;
+  string company_status = 5;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message UserIdRequest {
+  string user_id = 1;
+}
+
+message Company {
+  string id = 1;
+  string name = 2;
+  string contact_email = 3;
+  string contact_phone = 4;
+  string status = 5;
+  string rejection_reason = 6;
+}
+
+message CompanyList {
+  repeated Company items = 1;
+}
+
+message DecideCompanyRequest {
+  practiconecta.common.Actor actor = 1;
+  string company_id = 2;
+  bool approve = 3;
+  string reason = 4;
+}
+
+message StudentSummariesRequest {
+  practiconecta.common.Actor actor = 1;
+  repeated string student_ids = 2;
+}
+
+message StudentSummary {
+  string id = 1;
+  string full_name = 2;
+  string career_code = 3;
+  int32 semester = 4;
+  repeated string skills = 5;
+  bool has_cv = 6;
+}
+
+message StudentSummaryList {
+  repeated StudentSummary items = 1;
+}
+
+message CompanyIdRequest {
+  string company_id = 1;
+}
+
+message RoleRequest {
+  string role = 1;
+}
+
+message UserIdList {
+  repeated string user_ids = 1;
+}
+
+// Operaciones que necesita el gateway.
+service IdentityService {
+  rpc Login(LoginRequest) returns (User);
+  rpc GetUser(UserIdRequest) returns (User);
+  rpc ListPendingCompanies(practiconecta.common.ActorRequest) returns (CompanyList);
+  rpc DecideCompany(DecideCompanyRequest) returns (Company);
+  rpc GetStudentSummaries(StudentSummariesRequest) returns (StudentSummaryList);
+}
+
+// Operaciones que necesitan otros servicios (PSI).
+service IdentityInternalService {
+  rpc GetCompany(CompanyIdRequest) returns (Company);
+  rpc ListUserIdsByRole(RoleRequest) returns (UserIdList);
+}

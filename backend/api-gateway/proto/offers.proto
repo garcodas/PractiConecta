@@ -1,0 +1,90 @@
+syntax = "proto3";
+package practiconecta.offers;
+
+import "common.proto";
+
+message Offer {
+  string id = 1;
+  string company_id = 2;
+  string company_name = 3;
+  string title = 4;
+  string description = 5;
+  string career_code = 6;
+  string modality = 7;
+  string schedule = 8;
+  string deadline = 9;
+  string status = 10;
+  string rejection_reason = 11;
+  string created_at = 12;
+}
+
+message OfferList {
+  repeated Offer items = 1;
+}
+
+message CreateOfferRequest {
+  practiconecta.common.Actor actor = 1;
+  string title = 2;
+  string description = 3;
+  string career_code = 4;
+  string modality = 5;
+  string schedule = 6;
+  string deadline = 7;
+}
+
+message OfferActionRequest {
+  practiconecta.common.Actor actor = 1;
+  string offer_id = 2;
+}
+
+message DecideOfferRequest {
+  practiconecta.common.Actor actor = 1;
+  string offer_id = 2;
+  bool approve = 3;
+  string reason = 4;
+}
+
+message SearchOffersRequest {
+  practiconecta.common.Actor actor = 1;
+  string career_code = 2;
+  string modality = 3;
+  string schedule = 4;
+  int32 page = 5;
+}
+
+message OfferPage {
+  repeated Offer items = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message OfferIdRequest {
+  string offer_id = 1;
+}
+
+message OfferSnapshot {
+  string id = 1;
+  string company_id = 2;
+  string company_name = 3;
+  string title = 4;
+  string status = 5;
+  string deadline = 6;
+}
+
+// Operaciones que necesita el gateway.
+service OffersService {
+  rpc CreateOffer(CreateOfferRequest) returns (Offer);
+  rpc ListCompanyOffers(practiconecta.common.ActorRequest) returns (OfferList);
+  rpc GetCompanyOffer(OfferActionRequest) returns (Offer);
+  rpc CloseOffer(OfferActionRequest) returns (Offer);
+  rpc ListPendingOffers(practiconecta.common.ActorRequest) returns (OfferList);
+  rpc DecideOffer(DecideOfferRequest) returns (Offer);
+  rpc SearchOffers(SearchOffersRequest) returns (OfferPage);
+  rpc GetVisibleOffer(OfferActionRequest) returns (Offer);
+}
+
+// Lo único que applications-service puede pedir: no ve aprobaciones (PSI).
+service OffersInternalService {
+  rpc GetOfferSnapshot(OfferIdRequest) returns (OfferSnapshot);
+}

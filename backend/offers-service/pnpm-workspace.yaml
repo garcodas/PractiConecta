@@ -1,0 +1,6 @@
+# Solo ajustes de pnpm: este proyecto no pertenece a ningún workspace.
+allowBuilds:
+  '@swc/core': true
+  grpc-tools: true
+  msgpackr-extract: true
+  protobufjs: true

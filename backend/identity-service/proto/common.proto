@@ -1,0 +1,15 @@
+syntax = "proto3";
+package practiconecta.common;
+
+// Usuario autenticado que origina la operación. Los servicios lo usan para
+// comprobar rol y propiedad: la autorización no depende solo del gateway.
+message Actor {
+  string user_id = 1;
+  string role = 2;
+}
+
+message Empty {}
+
+message ActorRequest {
+  Actor actor = 1;
+}
